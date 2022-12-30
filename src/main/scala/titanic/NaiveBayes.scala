@@ -21,7 +21,9 @@ object NaiveBayes {
    * @param data    Data Set to be searched
    * @return A List of the attribute names that appear in the data set
    */
-  def getAttributes(data:List[Map[String, Any]]):Set[String]= ???
+  def getAttributes(data:List[Map[String, Any]]):Set[String]= {
+    data.flatMap(m => m.keySet).toSet
+  }
 
   /**
    * Extracts all attribute values that occur in a data set.
