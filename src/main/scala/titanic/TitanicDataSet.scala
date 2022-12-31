@@ -37,7 +37,10 @@ object TitanicDataSet {
    * @return A Map that contains only the attributes that should be extracted
    *
    */
-  def extractTrainingAttributes(record:Map[String, Any], attList:List[String]):Map[String, Any]= ???
+    // https://alvinalexander.com/scala/how-to-filter-map-filterkeys-retain-scala-cookbook/
+  def extractTrainingAttributes(record:Map[String, Any], attList:List[String]):Map[String, Any]= {
+    record.filterKeys(attList.contains)
+  }
 
   /**
    * This function should create the training data set. It extracts the necessary attributes,
@@ -47,7 +50,22 @@ object TitanicDataSet {
    * @param data Training Data Set that needs to be prepared
    * @return Prepared Data Set for using it with Naive Bayes
    */
-  def createDataSetForTraining(data:List[Map[String, Any]]): List[Map[String, Any]] = ???
+  def createDataSetForTraining(data:List[Map[String, Any]]): List[Map[String, Any]] = {
+//    val validAges1 = data.map(x => x.getOrElse("age", -1)).filterNot(_ == -1).map(_.toString.toFloat)
+//    val avgAge1 = validAges1.sum / validAges1.size
+    val attList = List("passengerID", "sex", "age", "survived", "pclass")
+    val sumAges = data.map(entry => entry.getOrElse("age", -1)).filter(e => e != -1).map(e => (e, 1)).reduce((x1, x2) => ((x1._1.asInstanceOf[Float] + x2._1.asInstanceOf[Float]), x1._2 + x2._2))
+    val avgAge = sumAges._1.asInstanceOf[Float] / sumAges._2
+
+//    println(data.map(elem => extractTrainingAttributes(elem, attList)).map(y => y.updated("age", rateAge(y.getOrElse("age", avgAge)))))
+    data.map(elem => extractTrainingAttributes(elem, attList)).map(y => y.updated("age", rateAge(y.getOrElse("age", avgAge))))
+  }
+  def rateAge(ageAny: Any): String = {
+    val age = ageAny.toString.toFloat
+    if (age < 15) "Kind"
+    else if (age < 45) "Erwachsener"
+    else "Rentner"
+  }
 
   /**
    * This function builds the model. It is represented as a function that maps a data record
