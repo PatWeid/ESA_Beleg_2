@@ -174,6 +174,7 @@ class NaiveBayesTest extends AnyFunSuite {
     val classificationData= Seq(Map[String,String]("id"->"1","day"->"weekday", "season"->"winter", "wind"->"high",
       "rain"->"heavy"))
     val model= NaiveBayes.modelForTrainExample(trainDataSet,"class")
+    println("model: " + model)
     val res= NaiveBayes.applyModel(model,classificationData,"id")
     val exp= List(("1","very late"))
     assert(res===exp)

@@ -153,7 +153,11 @@ object NaiveBayes {
    * @param classProps  Map that contains the class (key) and the corresponding propability
    * @return The class wit the highest propability
    */
-  def findBestFittingClass(classProps:Map[Any,Double]):Any= ???
+  def findBestFittingClass(classProps:Map[Any,Double]):Any= {
+    classProps.reduce((x1, x2) => {
+      if (x1._2 > x2._2) x1 else x2
+    })._1
+  }
 
   /**
    * This function builds the model. It is represented as a function that maps a data record
@@ -205,7 +209,9 @@ object NaiveBayes {
   def calcConditionalPropabilitiesForEachClassWithSmoothing
     (data: Map[Any, Set[(String, Map[Any, Int])]],  attValues:Map[String,Set[Any]],
      classCounts:Map[Any,Int]):
-  Map[Any,Set[(String, Map[Any, Double])]] = ???
+  Map[Any,Set[(String, Map[Any, Double])]] = {
+    data.map(x => x._1 -> x._2.map(y => (y._1, attValues(y._1).map(z => z -> ((y._2.getOrElse(z, 0).toDouble + 1) / (classCounts(x._1) + attValues(y._1).size))).toMap)))
+  }
 
   /**
    * This function builds the model using add one smoothing.
