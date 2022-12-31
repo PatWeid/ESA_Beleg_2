@@ -112,6 +112,20 @@ class NaiveBayesTest extends AnyFunSuite {
       "on time" -> Set(("season",Map("winter" -> 2, "autumn" -> 2, "spring" -> 4, "summer" -> 6)), ("rain",Map("slight" -> 8, "none" -> 5, "heavy" -> 1)), ("wind",Map("normal" -> 5, "high" -> 4, "none" -> 5)), ("day",Map("sunday" -> 1, "saturday" -> 2, "weekday" -> 9, "holiday" -> 2))))
     assert(res=== exp)
   }
+
+
+  test("Count Attribute Values for Each class2") {
+
+    val res = NaiveBayes.calcAttribValuesForEachClass(trainDataSet, "day")
+    println(res)
+    val exp = Map(
+      "sunday" -> Set(("season",Map("summer" -> 1)), ("rain",Map("none" -> 1)), ("wind",Map("normal" -> 1)), ("class",Map("on time" -> 1))),
+      "saturday" -> Set(("season",Map("winter" -> 1, "autumn" -> 1, "spring" -> 1, "summer" -> 1)), ("rain",Map("slight" -> 1, "none" -> 2, "heavy" -> 1)), ("wind",Map("normal" -> 2, "high" -> 2)), ("class",Map("late" -> 1, "cancled" -> 1, "on time" -> 2))),
+      "weekday" -> Set(("season",Map("winter" -> 5, "autumn" -> 2, "spring" -> 3, "summer" -> 3)), ("rain",Map("slight" -> 5, "none" -> 4, "heavy" -> 4)), ("wind",Map("normal" -> 4, "high" -> 4, "none" -> 5)), ("class",Map("late" -> 1, "very late" -> 3, "on time" -> 9))),
+      "holiday" -> Set(("season",Map("spring" -> 1, "summer" -> 1)), ("rain",Map("slight" -> 2)), ("wind",Map("normal" -> 1, "high" -> 1)), ("class",Map("on time" -> 2))))
+    assert(res === exp)
+  }
+
   test("Calculate Conditional Propabilities For Each Class"){
 
     val classVals= NaiveBayes.countAttributeValues(trainDataSet,"class")

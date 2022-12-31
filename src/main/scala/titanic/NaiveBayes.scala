@@ -76,22 +76,20 @@ object NaiveBayes {
    *
    */
   def calcAttribValuesForEachClass(data:List[Map[String, Any]], classAttrib:String): Map[Any, Set[(String, Map[Any, Int])]] = {
-    getAttributeValues(data)(classAttrib).map({case k => Map[String, Set[(String, Map[Any, Int])]]((k.asInstanceOf[String], createSet(k.asInstanceOf[String], data, classAttrib)))}).flatten.toMap
-
-
-//    val stepfirst = (for(attrib <- getAttributeValues(data)(classAttrib); dataSet <- data if(dataSet(classAttrib).equals(attrib))) yield Tuple2(attrib, dataSet))
-//    val steptwo = stepfirst.groupBy(_._1)
-//    println(stepfirst)
-//    println(steptwo)
-//    result
+    getAttributeValues(data)(classAttrib)
+      .flatMap(k => Map[String, Set[(String, Map[Any, Int])]]((k.asInstanceOf[String], createSet(k.asInstanceOf[String], data, classAttrib))))
+      .toMap
   }
 
   def createSet(k: String, data:List[Map[String, Any]], classAttrib:String): Set[(String, Map[Any, Int])] = {
-
-    println("k: " + k)
-    println(data.filter(map => map(classAttrib).asInstanceOf[String].equals(k)).flatten.groupBy(_._1).map({case(k,v) => (k, v.map(_._2))}).map({case(k,v) => (k, v.groupBy(identity).map({case (k,v) => (k, v.size)}))}).filter({case e => e._1 != classAttrib}).map(e => Tuple2(e._1,e._2)).toSet)
-    data.filter(map => map(classAttrib).asInstanceOf[String].equals(k)).flatten.groupBy(_._1).map({case(k,v) => (k, v.map(_._2))}).map({case(k,v) => (k, v.groupBy(identity).map({case (k,v) => (k, v.size)}))}).filter({case e => e._1 != classAttrib}).map(e => Tuple2(e._1,e._2)).toSet
-//    Set(("a", Map("b"-> 5)))
+    data.filter(map => map(classAttrib).asInstanceOf[String].equals(k))
+      .flatten
+      .groupBy(_._1)
+      .map({case(k,v) => (k, v.map(_._2))})
+      .map({case(k,v) => (k, v.groupBy(identity)
+      .map({case (k,v) => (k, v.size)}))})
+      .filter((e => e._1 != classAttrib))
+      .toSet
   }
   /**
    * This function should calculate the conditional propabilities for each class and attribute.
