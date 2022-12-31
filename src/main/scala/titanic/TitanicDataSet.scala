@@ -8,7 +8,9 @@ object TitanicDataSet {
    *
    * @return The model represented as a function
    */
-  def simpleModel:(Map[String, Any], String) => (Any, Any)= ???
+  def simpleModel:(Map[String, Any], String) => (Any, Any)= {
+    (map,id_key) => (map(id_key), if(map("sex")=="female") 1 else 0)
+  }
 
   /**
    * This function should count for a given attribute list, how often an attribute is
