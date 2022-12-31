@@ -88,6 +88,10 @@ class NaiveBayesTest extends AnyFunSuite {
     assert(res===exp)
   }
 
+//  In der ersten Funktion werden die A -
+//    priori - Wahrscheinlichkeiten(Prior Propabilites) ermittelt
+//  .Die A -priori - Wahrscheinlichkeit ist
+//    die relative Häufigkeit des Vorkommens einer Klasse im Datensatz
   test ("Calc PriorPropablities"){
 
     val res=NaiveBayes.calcPriorPropabilities(trainDataSet,"class")
@@ -95,17 +99,17 @@ class NaiveBayesTest extends AnyFunSuite {
     assert(res===exp)
   }
 
+//  In der nächsten
+//  Funktion(calcAttribValuesForEachClass) müssen Sie die Anzahl der Vorkommen der
+//    einzelnen Attributwerte innerhalb der einzelnen Klassen ermitteln.
   test("Count Attribute Values for Each class"){
 
     val res = NaiveBayes.calcAttribValuesForEachClass(trainDataSet,"class")
-    val exp= Map("late" -> Set(("season",Map("winter" -> 2)), ("rain",Map("none" -> 1, "heavy" -> 1)),
-      ("wind",Map("normal" -> 1, "high" -> 1)), ("day",Map("saturday" -> 1, "weekday" -> 1))),
-        "cancled" -> Set(("season",Map("spring" -> 1)), ("rain",Map("heavy" -> 1)), ("wind",Map("high" -> 1)),
-          ("day",Map("saturday" -> 1))), "very late" -> Set(("season",Map("winter" -> 2, "autumn" -> 1)),
-        ("rain",Map("none" -> 1, "heavy" -> 2)), ("wind",Map("normal" -> 2, "high" -> 1)), ("day",Map("weekday" -> 3))),
-      "on time" -> Set(("season",Map("winter" -> 2, "autumn" -> 2, "spring" -> 4, "summer" -> 6)),
-        ("rain",Map("slight" -> 8, "none" -> 5, "heavy" -> 1)), ("wind",Map("normal" -> 5, "high" -> 4, "none" -> 5)),
-        ("day",Map("sunday" -> 1, "saturday" -> 2, "weekday" -> 9, "holiday" -> 2))))
+    val exp= Map(
+      "late" -> Set(("season",Map("winter" -> 2)), ("rain",Map("none" -> 1, "heavy" -> 1)), ("wind",Map("normal" -> 1, "high" -> 1)), ("day",Map("saturday" -> 1, "weekday" -> 1))),
+      "cancled" -> Set(("season",Map("spring" -> 1)), ("rain",Map("heavy" -> 1)), ("wind",Map("high" -> 1)), ("day",Map("saturday" -> 1))),
+      "very late" -> Set(("season",Map("winter" -> 2, "autumn" -> 1)), ("rain",Map("none" -> 1, "heavy" -> 2)), ("wind",Map("normal" -> 2, "high" -> 1)), ("day",Map("weekday" -> 3))),
+      "on time" -> Set(("season",Map("winter" -> 2, "autumn" -> 2, "spring" -> 4, "summer" -> 6)), ("rain",Map("slight" -> 8, "none" -> 5, "heavy" -> 1)), ("wind",Map("normal" -> 5, "high" -> 4, "none" -> 5)), ("day",Map("sunday" -> 1, "saturday" -> 2, "weekday" -> 9, "holiday" -> 2))))
     assert(res=== exp)
   }
   test("Calculate Conditional Propabilities For Each Class"){

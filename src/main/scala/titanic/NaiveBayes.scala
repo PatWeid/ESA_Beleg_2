@@ -45,11 +45,17 @@ object NaiveBayes {
    * @param data    Data Set to be used for calculation
    * @param classAttrib Name of the attribute that contains the class assignment
    * @return A Map that consists of all classes (as key) and their corresponding prior propabilities.
+   *         In der ersten Funktion werden die A -
+   *                  priori - Wahrscheinlichkeiten(Prior Propabilites) ermittelt
+   *                  .Die A -priori - Wahrscheinlichkeit ist
+   *                  die relative Häufigkeit des Vorkommens einer Klasse im Datensatz
    *
    */
   def calcPriorPropabilities(data:List[Map[String, Any]], classAttrib:String):Map[Any,Double]= {
     countAttributeValues(data, classAttrib).map({case (k,v) => (k, v.asInstanceOf[Double] / data.size)})
   }
+//    data.groupBy(_.get(classAttrib)).transform((x,y) => (y.flatten.groupBy(_._1))).map(x =>(x._1.mkString, x._2.map(x => (x._1, x._2.groupBy(x => x._2).mapValues(_.size))).filterNot(_._1 == classAttrib).toSet))
+
 
   /**
    * This function should count for each class and attribute how often an
@@ -64,11 +70,29 @@ object NaiveBayes {
    * @return A Map that consists of all classes (as key) and a set of tuples (as value)
    *         that contains all attributes with their name (first element) and the corresponding
    *         number of occurrences stored in a Map(second element).
+   *         In der nächsten
+   *                  Funktion (calcAttribValuesForEachClass) müssen Sie die Anzahl der Vorkommen der
+   *                  einzelnen Attributwerte innerhalb der einzelnen Klassen ermitteln.
    *
    */
-  def calcAttribValuesForEachClass(data:List[Map[String, Any]], classAttrib:String):
-            Map[Any, Set[(String, Map[Any, Int])]] = ???
+  def calcAttribValuesForEachClass(data:List[Map[String, Any]], classAttrib:String): Map[Any, Set[(String, Map[Any, Int])]] = {
+    getAttributeValues(data)(classAttrib).map({case k => Map[String, Set[(String, Map[Any, Int])]]((k.asInstanceOf[String], createSet(k.asInstanceOf[String], data, classAttrib)))}).flatten.toMap
 
+
+//    val stepfirst = (for(attrib <- getAttributeValues(data)(classAttrib); dataSet <- data if(dataSet(classAttrib).equals(attrib))) yield Tuple2(attrib, dataSet))
+//    val steptwo = stepfirst.groupBy(_._1)
+//    println(stepfirst)
+//    println(steptwo)
+//    result
+  }
+
+  def createSet(k: String, data:List[Map[String, Any]], classAttrib:String): Set[(String, Map[Any, Int])] = {
+
+    println("k: " + k)
+    println(data.filter(map => map(classAttrib).asInstanceOf[String].equals(k)).flatten.groupBy(_._1).map({case(k,v) => (k, v.map(_._2))}).map({case(k,v) => (k, v.groupBy(identity).map({case (k,v) => (k, v.size)}))}).filter({case e => e._1 != classAttrib}).map(e => Tuple2(e._1,e._2)).toSet)
+    data.filter(map => map(classAttrib).asInstanceOf[String].equals(k)).flatten.groupBy(_._1).map({case(k,v) => (k, v.map(_._2))}).map({case(k,v) => (k, v.groupBy(identity).map({case (k,v) => (k, v.size)}))}).filter({case e => e._1 != classAttrib}).map(e => Tuple2(e._1,e._2)).toSet
+//    Set(("a", Map("b"-> 5)))
+  }
   /**
    * This function should calculate the conditional propabilities for each class and attribute.
    * It takes the number of occurences of each attribute value for each class
