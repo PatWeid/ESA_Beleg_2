@@ -20,7 +20,14 @@ object TitanicDataSet {
    * @param attList List of attributes where the missings should be counted
    * @return A Map that contains the attribute names (key) and the number of missings (value)
    */
-  def countAllMissingValues(data: List[Map[String, Any]], attList: List[String]): Map[String, Int] = ???
+  def countAllMissingValues(data: List[Map[String, Any]], attList: List[String]): Map[String, Int] = {
+//    println(attList.map(att => data.map(entry => entry(att))))
+    val resMap = scala.collection.mutable.Map[String, Int]()
+    for (entry <- data) yield {
+      attList.filterNot(entry.keys.toList.contains(_)).map(value => resMap.update(value, resMap.getOrElse(value, 0) + 1))
+    }
+    resMap.toMap
+  }
 
   /**
    * This function should extract a set of given attributes from a record
