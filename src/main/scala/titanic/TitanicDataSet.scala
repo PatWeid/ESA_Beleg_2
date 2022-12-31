@@ -1,5 +1,7 @@
 package titanic
 
+import titanic.NaiveBayes.{calcAttribValuesForEachClass, calcClassValuesForPrediction, calcConditionalPropabilitiesForEachClass, calcPriorPropabilities, countAttributeValues, findBestFittingClass}
+
 object TitanicDataSet {
 
   /**
@@ -60,11 +62,11 @@ object TitanicDataSet {
 //    println(data.map(elem => extractTrainingAttributes(elem, attList)).map(y => y.updated("age", rateAge(y.getOrElse("age", avgAge)))))
     data.map(elem => extractTrainingAttributes(elem, attList)).map(y => y.updated("age", rateAge(y.getOrElse("age", avgAge))))
   }
-  def rateAge(ageAny: Any): String = {
+  def rateAge(ageAny: Any): Int = {
     val age = ageAny.toString.toFloat
-    if (age < 15) "Kind"
-    else if (age < 45) "Erwachsener"
-    else "Rentner"
+    if (age < 15) 0
+    else if (age < 45) 1
+    else 2
   }
 
   /**
@@ -77,5 +79,16 @@ object TitanicDataSet {
    * @return A tuple consisting of the id (first element) and the predicted class (second element)
    */
   def createModelWithTitanicTrainingData(tdata:List[Map[String,Any]], classAttr:String):
-     (Map[String, Any], String) => (Any, Any)= ???
+     (Map[String, Any], String) => (Any, Any)= {
+
+                    val trainData = createDataSetForTraining(tdata)
+        val classVals= countAttributeValues(trainData,classAttr)
+              println("tdata: " + trainData.take(10))
+              println("classAttr: " + classAttr)
+        val data= calcAttribValuesForEachClass(trainData,classAttr)
+        val condProp = calcConditionalPropabilitiesForEachClass(data,classVals)
+        val prior= calcPriorPropabilities(trainData,classAttr)
+        (map,id_key) => (map(id_key),findBestFittingClass(calcClassValuesForPrediction(map-id_key,condProp,prior)))
+
+  }
 }
