@@ -105,6 +105,7 @@ class NaiveBayesTest extends AnyFunSuite {
   test("Count Attribute Values for Each class"){
 
     val res = NaiveBayes.calcAttribValuesForEachClass(trainDataSet,"class")
+    println(res)
     val exp= Map(
       "late" -> Set(("season",Map("winter" -> 2)), ("rain",Map("none" -> 1, "heavy" -> 1)), ("wind",Map("normal" -> 1, "high" -> 1)), ("day",Map("saturday" -> 1, "weekday" -> 1))),
       "cancled" -> Set(("season",Map("spring" -> 1)), ("rain",Map("heavy" -> 1)), ("wind",Map("high" -> 1)), ("day",Map("saturday" -> 1))),
@@ -130,19 +131,16 @@ class NaiveBayesTest extends AnyFunSuite {
 
     val classVals= NaiveBayes.countAttributeValues(trainDataSet,"class")
     val data= NaiveBayes.calcAttribValuesForEachClass(trainDataSet,"class")
+    println("classVals: " + classVals)
     val res = NaiveBayes.calcConditionalPropabilitiesForEachClass(data,classVals)
       .asInstanceOf[ Map[Any, Set[(String, Map[Any, Any])]]]
     val resext= NaiveBayes.extractValues(res).asInstanceOf[Set[(String,String,Double)]].toList.sorted
 
-    val exp= Map("late" -> Set(("season",Map("winter" -> 1.0)), ("rain",Map("none" -> 0.5, "heavy" -> 0.5)),
-      ("wind",Map("normal" -> 0.5, "high" -> 0.5)), ("day",Map("saturday" -> 0.5, "weekday" -> 0.5))),
-      "cancled" -> Set(("season",Map("spring" -> 1.0)), ("rain",Map("heavy" -> 1.0)), ("wind",Map("high" -> 1.0)),
-        ("day",Map("saturday" -> 1.0))), "very late" -> Set(("season",Map("winter" -> 0.667,
-        "autumn" -> 0.333)), ("rain",Map("none" -> 0.333, "heavy" -> 0.667)), ("wind",Map("normal" -> 0.667,
-        "high" -> 0.333)), ("day",Map("weekday" -> 1.0))), "on time" -> Set(("season",Map("winter" -> 0.143, "autumn" -> 0.143,
-        "spring" -> 0.286, "summer" -> 0.429)), ("rain",Map ("slight" -> 0.571, "none" -> 0.357, "heavy" -> 0.071)),
-        ("wind",Map("normal" -> 0.357, "high" -> 0.285, "none" -> 0.357)), ("day",Map("sunday" -> 0.071,
-          "saturday" -> 0.142, "weekday" -> 0.642, "holiday" -> 0.143)))).
+    val exp= Map(
+      "late" -> Set(("season",Map("winter" -> 1.0)), ("rain",Map("none" -> 0.5, "heavy" -> 0.5)), ("wind",Map("normal" -> 0.5, "high" -> 0.5)), ("day",Map("saturday" -> 0.5, "weekday" -> 0.5))),
+      "cancled" -> Set(("season",Map("spring" -> 1.0)), ("rain",Map("heavy" -> 1.0)), ("wind",Map("high" -> 1.0)), ("day",Map("saturday" -> 1.0))),
+      "very late" -> Set(("season",Map("winter" -> 0.667, "autumn" -> 0.333)), ("rain",Map("none" -> 0.333, "heavy" -> 0.667)), ("wind",Map("normal" -> 0.667, "high" -> 0.333)), ("day",Map("weekday" -> 1.0))),
+      "on time" -> Set(("season",Map("winter" -> 0.143, "autumn" -> 0.143, "spring" -> 0.286, "summer" -> 0.429)), ("rain",Map ("slight" -> 0.571, "none" -> 0.357, "heavy" -> 0.071)), ("wind",Map("normal" -> 0.357, "high" -> 0.285, "none" -> 0.357)), ("day",Map("sunday" -> 0.071, "saturday" -> 0.142, "weekday" -> 0.642, "holiday" -> 0.143)))).
       asInstanceOf[Map[Any,Set[(String, Map[Any,Any])]]]
     val expres= NaiveBayes.extractValues(exp).asInstanceOf[Set[(String,String,Double)]].toList.sorted
     val compare= resext.zip(expres)
@@ -156,6 +154,8 @@ class NaiveBayesTest extends AnyFunSuite {
     val condProp = NaiveBayes.calcConditionalPropabilitiesForEachClass(data,classVals)
     val prior= NaiveBayes.calcPriorPropabilities(trainDataSet,"class")
     val el= Map[String,String]("day"->"weekday", "season"->"winter", "wind"->"high", "rain"->"heavy")
+    println("condProp: " + condProp)
+    println("prior: " + prior)
     val res= NaiveBayes.calcClassValuesForPrediction(el,condProp,prior)
     val resExt= res.toList.asInstanceOf[List[(String,Double)]].sorted
     val exp= List(("cancled",0.0), ("late",0.0125), ("on time",0.0013), ("very late",0.0222))

@@ -54,8 +54,6 @@ object NaiveBayes {
   def calcPriorPropabilities(data:List[Map[String, Any]], classAttrib:String):Map[Any,Double]= {
     countAttributeValues(data, classAttrib).map({case (k,v) => (k, v.asInstanceOf[Double] / data.size)})
   }
-//    data.groupBy(_.get(classAttrib)).transform((x,y) => (y.flatten.groupBy(_._1))).map(x =>(x._1.mkString, x._2.map(x => (x._1, x._2.groupBy(x => x._2).mapValues(_.size))).filterNot(_._1 == classAttrib).toSet))
-
 
   /**
    * This function should count for each class and attribute how often an
@@ -106,8 +104,24 @@ object NaiveBayes {
    *         that contains all attributes with their name (first element) and the corresponding
    *         conditional propability stored in a Map(second element).
    */
-  def calcConditionalPropabilitiesForEachClass(data: Map[Any, Set[(String, Map[Any, Int])]],classCounts:Map[Any,Int]):
-      Map[Any,Set[(String, Map[Any, Double])]] = ???
+  def calcConditionalPropabilitiesForEachClass(data: Map[Any, Set[(String, Map[Any, Int])]],classCounts:Map[Any,Int]): Map[Any,Set[(String, Map[Any, Double])]] = {
+    data.transform((k, v) => v.map(x => (x._1, x._2.mapValues(x => x.toDouble/ classCounts(k)))))
+  }
+
+
+//  def calcConditionalPropabilitiesForEachClass2(data: Map[Any, Set[(String, Map[Any, Int])]], classCounts: Map[Any, Int]): Any = {
+////    var result = data.foreach(map => map._2.foreach(s => s._2.foreach(t => t._2.toDouble / classCounts(map._1))))
+//
+//    var result = for(elem <- data; divider <- classCounts.get(elem._1); setElem <- elem._2; setMap <- setElem._2) yield (divider)
+////    {
+////      println("elem: " + elem)
+////      println("divider: " + divider)
+////      println("setElem: " + setElem)
+////      println("setName: " + setElem._1)
+////      println("setMap: " + setMap._2.toDouble / divider)
+////    }
+//    println("result: " + result)
+//  }
 
   /**
    * This function should calculate the class propability values for each class.
@@ -124,7 +138,15 @@ object NaiveBayes {
    * @return A Map that consists of all classes (as key) and their corresponding propability
    */
   def calcClassValuesForPrediction(record:Map[String,Any], conditionalProps: Map[Any,Set[(String, Map[Any, Double])]],
-                     priorProps:Map[Any,Double]):Map[Any,Double]= ???
+                     priorProps:Map[Any,Double]):Map[Any,Double]= {
+//    val res = Map("a" -> 1, "b" -> 2) * Map("a" -> 1, "b" -> 2)
+    priorProps.map(classAttr => classAttr._1 -> (priorProps(classAttr._1) * record.flatMap(attr => conditionalProps(classAttr._1).
+    // filter to set with keyword
+        filter(set => set._1 == attr._1).
+    //
+      map(x => x._2.getOrElse(attr._2, 0.0))).product))
+  }
+
   /**
    * This function finds the class with the highest propability
    *
