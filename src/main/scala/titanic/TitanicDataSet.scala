@@ -81,10 +81,8 @@ object TitanicDataSet {
   def createModelWithTitanicTrainingData(tdata:List[Map[String,Any]], classAttr:String):
      (Map[String, Any], String) => (Any, Any)= {
 
-                    val trainData = createDataSetForTraining(tdata)
+        val trainData = createDataSetForTraining(tdata)
         val classVals= countAttributeValues(trainData,classAttr)
-              println("tdata: " + trainData.take(10))
-              println("classAttr: " + classAttr)
         val data= calcAttribValuesForEachClass(trainData,classAttr)
         val condProp = calcConditionalPropabilitiesForEachClass(data,classVals)
         val prior= calcPriorPropabilities(trainData,classAttr)

@@ -75,12 +75,12 @@ object NaiveBayes {
    */
   def calcAttribValuesForEachClass(data:List[Map[String, Any]], classAttrib:String): Map[Any, Set[(String, Map[Any, Int])]] = {
     getAttributeValues(data)(classAttrib)
-      .flatMap(k => Map[String, Set[(String, Map[Any, Int])]]((k.asInstanceOf[String], createSet(k.asInstanceOf[String], data, classAttrib))))
+      .flatMap(k => Map[String, Set[(String, Map[Any, Int])]]((k.toString, createSet(k.toString, data, classAttrib))))
       .toMap
   }
 
   def createSet(k: String, data:List[Map[String, Any]], classAttrib:String): Set[(String, Map[Any, Int])] = {
-    data.filter(map => map(classAttrib).asInstanceOf[String].equals(k))
+    data.filter(map => map(classAttrib).toString.equals(k))
       .flatten
       .groupBy(_._1)
       .map({case(k,v) => (k, v.map(_._2))})

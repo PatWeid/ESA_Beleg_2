@@ -4,7 +4,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import titanic.NaiveBayes.{calcConditionalPropabilitiesForEachClassWithSmoothing, getAttributeValues}
 import titanic._
 
-class NaiveBayesTest2 extends AnyFunSuite {
+class NaiveBayesTestUpdated extends AnyFunSuite {
 
   val trainDataSet= List(
     Map[String,String]("day"-> "weekday", "season"->"spring", "wind"->"none", "rain"->"none", "class"->"on time"),
